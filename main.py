@@ -20,6 +20,7 @@ def main(user_in, user_out):
     number_of_json_files = 0
     number_of_misc_files = 0
     progress_value = 0
+    weird_files = 0
    
     """
     item: the path to the file that is to be sorted
@@ -57,19 +58,29 @@ def main(user_in, user_out):
     misc: boolean to indicate if file is misc
     """
     def handle_file(file: Path, dump_folder: Path, json_file: Path = None, misc: bool = False): #gets the date from file and sends file to appropriate year/month folder
+        nonlocal weird_files
         if misc: #if its a misc file, send to misc folder
             temp_dict = {}
             file_destination = make_new_directory(dump_folder, temp_dict, True)
             shutil.move(str(file), str(file_destination))
         elif json_file is None: #if there is no json file, get the date using EXIF, send to destination
-            date_parsed = extract_date(file)
-            file_destination = make_new_directory(dump_folder, date_parsed)
-            #print(f'HAS EXIF-file: {file.name}, date: {str(date_parsed)}')
-            shutil.move(str(file), str(file_destination))
+            try:
+                date_parsed = extract_date(file)
+                file_destination = make_new_directory(dump_folder, date_parsed)
+                shutil.move(str(file), str(file_destination))
+            except Exception as e:
+                weird_files += 1
+                json_list = find_json(file)
+                if json_list: #checks if there exists a corresponding .json file
+                    json_file = json_list[0]
+                    handle_file(file, dump_folder, json_file)
+                else: #can't find date, send file to misc folder
+                    number_of_misc_files += 1
+                    handle_file(file, dump_folder, json_file = None, misc = True)
+
         else: #if there is a json file, use it to get the date, send to destination
             date_parsed = parse_json(json_file)
             file_destination = make_new_directory(dump_folder, date_parsed)
-            #print(f'NO EXIF-file: {file.name}, date: {str(date_parsed)}, json file: {str(json_file)}')
             shutil.move(str(file), str(file_destination))
  
     """
@@ -184,6 +195,7 @@ def main(user_in, user_out):
     print(f"Total files processed: {completed_files}")
     print(f"Number of json files: {number_of_json_files}")
     print(f"Number of files in misc folder: {number_of_misc_files}")
+    print(f"Number of files that caused an error: {weird_files}")
 
 
 """
