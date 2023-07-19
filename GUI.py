@@ -16,12 +16,15 @@ def get_output_folder():
 def run_program():
     user_in = input_entry.get()
     user_out = output_entry.get()
-    #if not user_in or not user_out:
-        #tk.messagebox.showerror("Error", "Please select both input and output folders.")
-        #return
-    #main.main(user_in, user_out)
-    tk.messagebox.showinfo("Done", f"You're all set! \n Your photos are ready at: \n {user_out}")
-    app.destroy()
+    if not user_in or not user_out:
+        tk.messagebox.showerror("Error", "you must select both input and output folders before running the program.")
+        return
+    try:
+        main.main(user_in, user_out)
+        tk.messagebox.showinfo("Done", f"You're all set! \n Your photos are ready at: \n {user_out}")
+        app.destroy()
+    except Exception as e:
+        tk.messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")

@@ -6,12 +6,12 @@ import re as re
 import argparse as argparse
 from pathlib import Path
 from datetime import datetime
-import multiprocessing as mp
-
+from tqdm import tqdm
 
 
 def main(user_in, user_out):
 
+    #---VARIABLES---
     RAW_TAKEOUT_FOLDER = Path(user_in)
     DUMP_FOLDER = Path(user_out)
     all_files = list(RAW_TAKEOUT_FOLDER.rglob('*'))
@@ -19,18 +19,22 @@ def main(user_in, user_out):
     completed_files = 0
     number_of_json_files = 0
     number_of_misc_files = 0
+    progress_value = 0
    
-    def sort_photo(item: Path, dump_folder: Path): #iterates through the folders/files passed in
+    """
+    item: the path to the file that is to be sorted
+    dump_folder: path to where the user wants to send the photos
+    """
+    def sort_photo(item: Path, dump_folder: Path): #takes a file and sorts it
 
         nonlocal total_files
         nonlocal completed_files
         nonlocal number_of_json_files
         nonlocal number_of_misc_files
+        nonlocal progress_value
 
-        if item.is_file():
+        if item.is_file(): #checks if input is actually a file and not a directory
             completed_files += 1
-            progress_value = int(completed_files / total_files * 100)
-            #print(f"Progress: {progress_value}%")
             if item.name.endswith('.json'): #ignore .json files
                 number_of_json_files += 1
                 return
@@ -117,7 +121,7 @@ def main(user_in, user_out):
     file: path to file to be checked
     """
     def exif_extension(file: Path): #checks if the file has a valid EXIF extension (i.e. .jpg, .heic, etc)
-        good_extensions = ['.jpg', '.jpeg', '.JPEG' '.png', '.PNG', '.heic', '.HEIC']
+        good_extensions = ['.jpg', '.jpeg', '.JPEG', '.heic', '.HEIC', '.tiff', '.TIFF']
         if any(file.suffix.endswith(ext) for ext in good_extensions):
             return True
         else:
@@ -168,17 +172,25 @@ def main(user_in, user_out):
             json_match = [file for file in parent_folder.iterdir() if file.is_file() and file.name.endswith('.json') and re.search(file_stem, file.name)] #searches for json
         return json_match
 
+    #runs the program
+    with tqdm(total= total_files, unit= "files", colour= "green") as pbar:
+        for file in all_files:
+            sort_photo(file, DUMP_FOLDER)
+            pbar.update(1)
 
-    for file in all_files:
-        sort_photo(file, DUMP_FOLDER)
-    print("statistics: ")
-    print(f"total files present: {total_files}")
-    print(f"total files processed: {completed_files}")
-    print(f"number of json files: {number_of_json_files}")
-    print(f"number of files in misc folder: {number_of_misc_files}")
+    #---display statistics---
+    print("Statistics: ")
+    print(f"Total files present: {total_files}")
+    print(f"Total files processed: {completed_files}")
+    print(f"Number of json files: {number_of_json_files}")
+    print(f"Number of files in misc folder: {number_of_misc_files}")
 
+
+"""
+THIS PART IS NOT NECESSARY, ITS JUST USEFUL IF YOU WANT TO RUN THE THING FROM THE COMMAND LINE
+"""
 if __name__ == '__main__':
-    user_in = './test'
-    user_out = './dump folder'
+    user_in = "./test" #input("please enter the directory where your google takeout photos are located: ")
+    user_out = "./dump folder" #input("please enter the directory where you would like to save your sorted photos: ")
     main(user_in, user_out)
 
