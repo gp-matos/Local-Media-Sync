@@ -1,21 +1,16 @@
-experiment.py is where youre just testing things to see how they work in code, not part of app
-main.py is where all the code is at
-test folder is the folder you made that holds a bunch of pictures youre using to test the program
-dump folder is a temporary folder you made to test being able to move the pictures
+What does this do?
 
-you were able to extract date from all the files with exif data (photos) and prompt the user to select where they want to save their stuff and move them there, now you need to:
-1. figure out how to find matching json files for files that dont have exif data (account for weird naming anomalies (duplictes, odd extensions, etc))
-2. figure out how to read the date in the json file and parse it the same way as the others
-3. dump any files that are still unaccounted for in a misc folder
-4. prompt user to pick where they extracted their google photos (instead of using test folder)
-5. check for bugs
-6. make a GUI so user doesnt have to fuck with command line
-7. turn it into an .exe
-8. make code and files pretty and organize and post to github (learn git)
+If you have ever tried to export all your photos from google photos,you know that the files that result from that process are very messy and hard to navigate.
+You'll get a bunch of different takeout folder with similar names and multiple copies of folders with the same year, and worst of all, all the folders are littered 
+with .json files that correspond to each image/video you have. These .json files contain metadata info about your images. 
 
+This tool helps sort out the mess that is google takeout. It will go through each file in your google takeout, read the date it was taken, and move the files to 
+folders sorted my month and year. For instance a photo takin on August 5th, 2016 will be moved to ".../your photos/2016/August/". For files where the tool is unable to 
+determine the date, it will be sent to a misc folder so that every file is accounted for, leaving behind only .json files. 
 
-test.json
-test(1).json
-test.heic.json
-test.heic(1).json
-test(1).heic.json
+How to use:
+
+Go through the google takeout process like normal. Extract the zip folders from google takeout all into a single folder (you may have multiple zip files depending on 
+how many photos you have, the all need to be extracted into a single folder). Simply install the .exe file, and run it. It will prompt you to select the folder in which
+you extracted the google takeout files, and the folder where you would like to save your sorted files. Press "GO" and the program will run. A message will pop up notifying
+you that you're done. And thats it! You should now have a folder with all your photos backed up by year and month. 
