@@ -4,3 +4,4 @@ test/
 experiment.py
 *.exe
 *.ico
+*.zip

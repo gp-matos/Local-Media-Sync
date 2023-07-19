@@ -60,17 +60,17 @@ def main(user_in, user_out):
         if misc: #if its a misc file, send to misc folder
             temp_dict = {}
             file_destination = make_new_directory(dump_folder, temp_dict, True)
-            shutil.copy2(str(file), str(file_destination))
+            shutil.move(str(file), str(file_destination))
         elif json_file is None: #if there is no json file, get the date using EXIF, send to destination
             date_parsed = extract_date(file)
             file_destination = make_new_directory(dump_folder, date_parsed)
             #print(f'HAS EXIF-file: {file.name}, date: {str(date_parsed)}')
-            shutil.copy2(str(file), str(file_destination))
+            shutil.move(str(file), str(file_destination))
         else: #if there is a json file, use it to get the date, send to destination
             date_parsed = parse_json(json_file)
             file_destination = make_new_directory(dump_folder, date_parsed)
             #print(f'NO EXIF-file: {file.name}, date: {str(date_parsed)}, json file: {str(json_file)}')
-            shutil.copy2(str(file), str(file_destination))
+            shutil.move(str(file), str(file_destination))
  
     """
     json_file: path to the json file

@@ -12,5 +12,7 @@ How to use:
 
 Go through the google takeout process like normal. Extract the zip folders from google takeout all into a single folder (you may have multiple zip files depending on 
 how many photos you have, the all need to be extracted into a single folder). Simply install the .exe file, and run it. It will prompt you to select the folder in which
-you extracted the google takeout files, and the folder where you would like to save your sorted files. Press "GO" and the program will run. A message will pop up notifying
-you that you're done. And thats it! You should now have a folder with all your photos backed up by year and month. 
+you extracted the google takeout files, and the folder where you would like to save your sorted files. Please ensure the destination folder you select is empty; this is 
+because if there are any files already in the destination directory, it could cause naming conflicts with the google files, which may result in files being unintentionally 
+overridden. Press "GO" and the program will run. A message will pop up notifying you that you're done. And thats it! You should now have a folder with all your photos 
+backed up by year and month.

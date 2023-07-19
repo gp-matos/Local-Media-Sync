@@ -33,18 +33,18 @@ app = ctk.CTk()
 app.title("Google Photos Organizer")
 app.geometry("600x350")
 # Labels
-title = ctk.CTkLabel(app, text="Google Photos Organizer")
-input_label = ctk.CTkLabel(app, text="Input Folder:")
-output_label = ctk.CTkLabel(app, text="Output Folder:")
+title = ctk.CTkLabel(app, text="Google Photos Organizer", font=("Arial", 20, "bold"))
+input_label = ctk.CTkLabel(app, text="Input Folder:", font=("Arial", 12))
+output_label = ctk.CTkLabel(app, text="Output Folder:", font=("Arial", 12))
 
 # Entries
-input_entry = ctk.CTkEntry(app)
-output_entry = ctk.CTkEntry(app)
+input_entry = ctk.CTkEntry(app, placeholder_text= "Please select where you extracted your takeout files")
+output_entry = ctk.CTkEntry(app, placeholder_text= "Please select where you would like to save your files")
 
 # Buttons
-input_button = ctk.CTkButton(app, text="Browse", command=get_input_folder)
-output_button = ctk.CTkButton(app, text="Browse", command=get_output_folder)
-go_button = ctk.CTkButton(app, text="Go", command=run_program)
+input_button = ctk.CTkButton(app, text="Browse", command=get_input_folder, font=("Arial", 12, "bold"))
+output_button = ctk.CTkButton(app, text="Browse", command=get_output_folder, font=("Arial", 12, "bold"))
+go_button = ctk.CTkButton(app, text="Go!", command=run_program, font=("Arial", 15, "bold"))
 
 # Layout using grid manager
 title.grid(row=0, column=0, columnspan=3,padx=10, pady=10, sticky="we")
