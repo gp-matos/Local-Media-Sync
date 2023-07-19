@@ -16,10 +16,10 @@ def get_output_folder():
 def run_program():
     user_in = input_entry.get()
     user_out = output_entry.get()
-    if not user_in or not user_out:
+    if not user_in or not user_out: #user must select both input and output for it to work
         tk.messagebox.showerror("Error", "you must select both input and output folders before running the program.")
         return
-    try:
+    try: #makes sure there aren't any errors
         main.main(user_in, user_out)
         tk.messagebox.showinfo("Done", f"You're all set! \n Your photos are ready at: \n {user_out}")
         app.destroy()

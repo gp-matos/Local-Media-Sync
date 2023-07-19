@@ -172,7 +172,7 @@ def main(user_in, user_out):
             json_match = [file for file in parent_folder.iterdir() if file.is_file() and file.name.endswith('.json') and re.search(file_stem, file.name)] #searches for json
         return json_match
 
-    #runs the program
+    #runs the program with progress bar (tqdm)
     with tqdm(total= total_files, unit= "files", colour= "green") as pbar:
         for file in all_files:
             sort_photo(file, DUMP_FOLDER)
@@ -190,7 +190,7 @@ def main(user_in, user_out):
 THIS PART IS NOT NECESSARY, ITS JUST USEFUL IF YOU WANT TO RUN THE THING FROM THE COMMAND LINE
 """
 if __name__ == '__main__':
-    user_in = "./test" #input("please enter the directory where your google takeout photos are located: ")
-    user_out = "./dump folder" #input("please enter the directory where you would like to save your sorted photos: ")
+    user_in = input("please enter the directory where your google takeout photos are located: ")
+    user_out = input("please enter the directory where you would like to save your sorted photos: ")
     main(user_in, user_out)
 
