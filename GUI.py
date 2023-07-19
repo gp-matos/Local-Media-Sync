@@ -16,10 +16,12 @@ def get_output_folder():
 def run_program():
     user_in = input_entry.get()
     user_out = output_entry.get()
-    if not user_in or not user_out:
-        tk.messagebox.showerror("Error", "Please select both input and output folders.")
-        return
-    main.main(user_in, user_out)
+    #if not user_in or not user_out:
+        #tk.messagebox.showerror("Error", "Please select both input and output folders.")
+        #return
+    #main.main(user_in, user_out)
+    tk.messagebox.showinfo("Done", f"You're all set! \n Your photos are ready at: \n {user_out}")
+    app.destroy()
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -42,7 +44,7 @@ output_button = ctk.CTkButton(app, text="Browse", command=get_output_folder)
 go_button = ctk.CTkButton(app, text="Go", command=run_program)
 
 # Layout using grid manager
-title.grid(row=0, column=0, columnspan=3,padx=10,pady=15, sticky="we")
+title.grid(row=0, column=0, columnspan=3,padx=10, pady=10, sticky="we")
 
 input_label.grid(row=1, column=0, padx=10, pady=5, sticky="w")
 input_entry.grid(row=2, column=1, padx=10, pady=5, sticky="we")
@@ -60,7 +62,4 @@ app.grid_columnconfigure(1, weight=1)
 app.mainloop()
 
 
-
-
-app.mainloop()
 

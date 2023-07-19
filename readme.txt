@@ -12,3 +12,10 @@ you were able to extract date from all the files with exif data (photos) and pro
 6. make a GUI so user doesnt have to fuck with command line
 7. turn it into an .exe
 8. make code and files pretty and organize and post to github (learn git)
+
+
+test.json
+test(1).json
+test.heic.json
+test.heic(1).json
+test(1).heic.json
