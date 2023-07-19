@@ -6,37 +6,46 @@ import re as re
 import argparse as argparse
 from pathlib import Path
 from datetime import datetime
-from tkinter import Tk
-from tkinter.filedialog import askdirectory
+import multiprocessing as mp
+
+
 
 def main(user_in, user_out):
 
-    """
-    input: path to the input folder where google takeout folders are
-    dump_folder: path to the location the user wishes to save the photos to
-    """
-    def iterate_through(input: Path, dump_folder: Path): #iterates through the folders/files passed in
-        nonlocal number_of_files
-        nonlocal number_of_misc_files
-        for item in input.iterdir():
-            if item.is_dir(): #recursively itirates through folders
-                iterate_through(item, dump_folder)
-            elif item.is_file() and item.name.endswith('.json'): #ignore .json files
-                number_of_files += 1
-                continue
-            else:
-                number_of_files += 1
-                if exif_extension(item): #checks if file has EXIF data
-                    handle_file(item, dump_folder)
-                else: 
-                    json_list = find_json(item)
-                    if json_list: #checks if there exists a corresponding .json file
-                        json_file = json_list[0]
-                        handle_file(item, dump_folder, json_file)
-                    else: #can't find date, send file to misc folder
-                        number_of_misc_files += 1
-                        handle_file(item, dump_folder, json_file = None, misc = True)
+    RAW_TAKEOUT_FOLDER = Path(user_in)
+    DUMP_FOLDER = Path(user_out)
+    all_files = list(RAW_TAKEOUT_FOLDER.rglob('*'))
+    total_files = len(all_files)
+    completed_files = 0
+    number_of_json_files = 0
+    number_of_misc_files = 0
+   
+    def sort_photo(item: Path, dump_folder: Path): #iterates through the folders/files passed in
 
+        nonlocal total_files
+        nonlocal completed_files
+        nonlocal number_of_json_files
+        nonlocal number_of_misc_files
+
+        if item.is_file():
+            completed_files += 1
+            progress_value = int(completed_files / total_files * 100)
+            #print(f"Progress: {progress_value}%")
+            if item.name.endswith('.json'): #ignore .json files
+                number_of_json_files += 1
+                return
+            elif exif_extension(item): #checks if file has EXIF data
+                handle_file(item, dump_folder)
+            else: 
+                json_list = find_json(item)
+                if json_list: #checks if there exists a corresponding .json file
+                    json_file = json_list[0]
+                    handle_file(item, dump_folder, json_file)
+                else: #can't find date, send file to misc folder
+                    number_of_misc_files += 1
+                    handle_file(item, dump_folder, json_file = None, misc = True)
+
+        
     """
     file: path to the file that is being handled
     dump_folder: path to the location the user wishes to save the photos to
@@ -51,12 +60,12 @@ def main(user_in, user_out):
         elif json_file is None: #if there is no json file, get the date using EXIF, send to destination
             date_parsed = extract_date(file)
             file_destination = make_new_directory(dump_folder, date_parsed)
-            print(f'HAS EXIF-file: {file.name}, date: {str(date_parsed)}')
+            #print(f'HAS EXIF-file: {file.name}, date: {str(date_parsed)}')
             shutil.copy2(str(file), str(file_destination))
         else: #if there is a json file, use it to get the date, send to destination
             date_parsed = parse_json(json_file)
             file_destination = make_new_directory(dump_folder, date_parsed)
-            print(f'NO EXIF-file: {file.name}, date: {str(date_parsed)}, json file: {str(json_file)}')
+            #print(f'NO EXIF-file: {file.name}, date: {str(date_parsed)}, json file: {str(json_file)}')
             shutil.copy2(str(file), str(file_destination))
  
     """
@@ -108,7 +117,7 @@ def main(user_in, user_out):
     file: path to file to be checked
     """
     def exif_extension(file: Path): #checks if the file has a valid EXIF extension (i.e. .jpg, .heic, etc)
-        good_extensions = ['.jpg', '.jpeg', '.JPEG' '.png', '.PNG', '.webp', '.WEBP', '.tif', '.TIF', '.tiff', '.TIFF', '.svg', '.SVG', '.heic', '.HEIC']
+        good_extensions = ['.jpg', '.jpeg', '.JPEG' '.png', '.PNG', '.heic', '.HEIC']
         if any(file.suffix.endswith(ext) for ext in good_extensions):
             return True
         else:
@@ -159,14 +168,14 @@ def main(user_in, user_out):
             json_match = [file for file in parent_folder.iterdir() if file.is_file() and file.name.endswith('.json') and re.search(file_stem, file.name)] #searches for json
         return json_match
 
-    RAW_TAKEOUT_FOLDER = Path(user_in)
-    DUMP_FOLDER = Path(user_out)
-    number_of_files = 0
-    number_of_misc_files = 0
 
-    iterate_through(RAW_TAKEOUT_FOLDER, DUMP_FOLDER)
-    print(f'number of files processed: {number_of_files}')
-    print(f'number of misc files processed: {number_of_misc_files}')
+    for file in all_files:
+        sort_photo(file, DUMP_FOLDER)
+    print("statistics: ")
+    print(f"total files present: {total_files}")
+    print(f"total files processed: {completed_files}")
+    print(f"number of json files: {number_of_json_files}")
+    print(f"number of files in misc folder: {number_of_misc_files}")
 
 if __name__ == '__main__':
     user_in = './test'
