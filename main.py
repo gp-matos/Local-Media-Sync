@@ -121,7 +121,7 @@ def main(user_in, user_out):
     file: path to file to be checked
     """
     def exif_extension(file: Path): #checks if the file has a valid EXIF extension (i.e. .jpg, .heic, etc)
-        good_extensions = ['.jpg', '.jpeg', '.JPEG', '.heic', '.HEIC', '.tiff', '.TIFF']
+        good_extensions = ['.jpg', '.jpeg', '.JPEG', '.heic', '.HEIC']
         if any(file.suffix.endswith(ext) for ext in good_extensions):
             return True
         else:
