@@ -59,15 +59,16 @@ def main(user_in, user_out):
     """
     def handle_file(file: Path, dump_folder: Path, json_file: Path = None, misc: bool = False): #gets the date from file and sends file to appropriate year/month folder
         nonlocal weird_files
+        nonlocal number_of_misc_files
         if misc: #if its a misc file, send to misc folder
             temp_dict = {}
             file_destination = make_new_directory(dump_folder, temp_dict, True)
-            shutil.move(str(file), str(file_destination))
+            shutil.copy2(str(file), str(file_destination))
         elif json_file is None: #if there is no json file, get the date using EXIF, send to destination
             try:
                 date_parsed = extract_date(file)
                 file_destination = make_new_directory(dump_folder, date_parsed)
-                shutil.move(str(file), str(file_destination))
+                shutil.copy2(str(file), str(file_destination))
             except Exception as e:
                 weird_files += 1
                 json_list = find_json(file)
@@ -81,7 +82,7 @@ def main(user_in, user_out):
         else: #if there is a json file, use it to get the date, send to destination
             date_parsed = parse_json(json_file)
             file_destination = make_new_directory(dump_folder, date_parsed)
-            shutil.move(str(file), str(file_destination))
+            shutil.copy2(str(file), str(file_destination))
  
     """
     json_file: path to the json file
@@ -119,8 +120,8 @@ def main(user_in, user_out):
             }
             return date_dict
         else: #parses string from EXIF data
-            remove_time = date_str.split(' ')[0]
-            date_list = remove_time.split(':')
+            recopy2_time = date_str.split(' ')[0]
+            date_list = recopy2_time.split(':')
             month = datetime.strptime(date_list[1], "%m")
             formatted_month = month.strftime("%B-%m")
             date_list[1] = formatted_month
@@ -177,7 +178,7 @@ def main(user_in, user_out):
         check_match = re.search(tag_pattern, file_stem) #checks if file name has tag like (3) - means there's multiple files with same stem
         if check_match: #if file does have tag
             tag = check_match.group(0) #extracts tag from stem
-            file_stem = file_stem.replace(tag, "") #remove tag from stem string, makes it easier to find json
+            file_stem = file_stem.replace(tag, "") #recopy2 tag from stem string, makes it easier to find json
             json_match = [file for file in parent_folder.iterdir() if file.is_file() and file.name.endswith('.json') and re.search(file_stem, file.name) and re.search(tag, file.name)] #searches for json
         else: #file does not have tag
             json_match = [file for file in parent_folder.iterdir() if file.is_file() and file.name.endswith('.json') and re.search(file_stem, file.name)] #searches for json

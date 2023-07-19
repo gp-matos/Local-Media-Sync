@@ -15,4 +15,4 @@ how many photos you have, the all need to be extracted into a single folder). Si
 you extracted the google takeout files, and the folder where you would like to save your sorted files. Please ensure the destination folder you select is empty; this is 
 because if there are any files already in the destination directory, it could cause naming conflicts with the google files, which may result in files being unintentionally 
 overridden. Press "GO" and the program will run. A message will pop up notifying you that you're done. And thats it! You should now have a folder with all your photos 
-backed up by year and month.
+backed up by year and month. You can then delete the old google takeout folders.
